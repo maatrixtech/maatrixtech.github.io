@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>MaAtrix Technologies | Cloud, Storage & Infrastructure Testing</title>
+
+  <meta name="description" content="MaAtrix Technologies automates cloud, storage and infrastructure testing using Python, APIs and AI-assisted validation." />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #050711;
+      --card: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.14);
+      --text: #f7f9ff;
+      --muted: #b8c2df;
+      --cyan: #00e5ff;
+      --blue: #3478ff;
+      --purple: #b833ff;
+      --gold: #ffcf5a;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(0, 229, 255, 0.16), transparent 28%),
+        radial-gradient(circle at 80% 15%, rgba(184, 51, 255, 0.18), transparent 30%),
+        radial-gradient(circle at 50% 90%, rgba(52, 120, 255, 0.12), transparent 35%),
+        linear-gradient(135deg, #050711, #091023 45%, #050711);
+      z-index: -3;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      z-index: -2;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: auto;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      background: rgba(5, 7, 17, 0.72);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+
+    .brand img {
+      height: 52px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 26px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: var(--cyan);
+    }
+
+    .hero {
+      min-height: 88vh;
+      display: grid;
+      align-items: center;
+      padding: 80px 0;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 9px 14px;
+      border: 1px solid rgba(0,229,255,0.35);
+      border-radius: 999px;
+      color: #dffbff;
+      background: rgba(0,229,255,0.08);
+      margin-bottom: 24px;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 16px var(--cyan);
+    }
+
+    h1 {
+      font-size: clamp(42px, 7vw, 76px);
+      line-height: 1.02;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--cyan), #ffffff, var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 660px;
+      margin-bottom: 34px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 22px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      font-weight: 700;
+      transition: 0.25s;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--cyan), var(--blue), var(--purple));
+      box-shadow: 0 16px 40px rgba(0,229,255,0.22);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      border-color: rgba(0,229,255,0.55);
+      box-shadow: 0 20px 46px rgba(0,229,255,0.18);
+    }
+
+    .visual-card {
+      padding: 32px;
+      min-height: 420px;
+      border-radius: 32px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.13), rgba(255,255,255,0.04));
+      border: 1px solid var(--card-border);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.35);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      animation: float 5s ease-in-out infinite;
+    }
+
+    .hero-logo {
+      width: min(320px, 90%);
+      filter: drop-shadow(0 0 30px rgba(0,229,255,0.25));
+      margin-bottom: 22px;
+    }
+
+    .visual-card h2 {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    .visual-card span {
+      color: var(--gold);
+      letter-spacing: 3px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    section {
+      padding: 92px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 46px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(30px, 4vw, 48px);
+      letter-spacing: -1px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      margin: 12px auto 0;
+      max-width: 720px;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      padding: 26px;
+      border-radius: 24px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      min-height: 230px;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      background: rgba(255,255,255,0.11);
+      border-color: rgba(0,229,255,0.44);
+    }
+
+    .icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, rgba(0,229,255,0.22), rgba(184,51,255,0.22));
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 24px;
+    }
+
+    .card h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .proof {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .proof-item {
+      text-align: center;
+      padding: 26px 14px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .proof-item strong {
+      display: block;
+      font-size: 30px;
+      color: var(--cyan);
+    }
+
+    .proof-item span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .step {
+      padding: 24px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .step-num {
+      color: var(--gold);
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .contact-panel {
+      padding: 42px;
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(0,229,255,0.14), rgba(184,51,255,0.13)),
+        rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      display: grid;
+      grid-template-columns: 1.4fr 0.6fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .contact-panel h2 {
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    .contact-panel p {
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 26px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .contact-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .services,
+      .process {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .proof {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .services,
+      .process,
+      .proof {
+        grid-template-columns: 1fr;
+      }
+
+      .brand img {
+        height: 42px;
+      }
+
+      .visual-card {
+        min-height: 320px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="container nav-inner">
+
+      <a class="brand" href="#home">
+        <img src="logo.png" alt="MaAtrix Technologies Logo" />
+      </a>
+
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#expertise">Expertise</a>
+        <a href="#process">Process</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+    </div>
+  </nav>
+
+  <main>
+
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+
+        <div class="reveal">
+          <div class="badge">
+            <span class="dot"></span>
+            AI. Innovation. Delivered.
+          </div>
+
+          <h1>
+            Automating
+            <span class="gradient-text">Cloud, Storage & Infrastructure Testing</span>
+          </h1>
+
+          <p>
+            MaAtrix Technologies builds Python-based automation and AI-assisted validation workflows for complex infrastructure environments including cloud platforms, storage systems, networking, and high-performance I/O.
+          </p>
+
+          <div class="actions">
+            <a class="btn primary" href="mailto:maatrixtech@outlook.com">Contact Us</a>
+            <a class="btn" href="#services">Explore Services</a>
+          </div>
+        </div>
+
+        <div class="visual-card reveal">
+          <div>
+            <img src="logo.png" alt="MaAtrix Technologies Logo" class="hero-logo" />
+            <h2>MaAtrix Technologies</h2>
+            <span>AI. INNOVATION. DELIVERED.</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="container">
+
+        <div class="section-title reveal">
+          <h2>What We Do</h2>
+          <p>
+            Focused services for companies working with cloud infrastructure, enterprise storage, high-performance networking, and complex system validation.
+          </p>
+        </div>
+
+        <div class="services">
+
+          <div class="card reveal">
+            <div class="icon">☁️</div>
+            <h3>Cloud Validation</h3>
+            <p>
+              VM lifecycle testing, image validation, volume operations, network checks, and end-to-end cloud workflow automation.
+            </p>
+          </div>
+
+          <div class="card reveal">
+            <div class="icon">💾</div>
+            <h3>Storage Testing</h3>
+            <p>
+              Validation for SAN, RAID, NVMe, snapshots, cloning, replication, and storage resiliency workflows.
+            </p>
+          </div>
+
+          <div class="card reveal">
+            <div class="icon">🔌</div>
+            <h3>I/O & Network Testing</h3>
+            <p>
+              Testing support for NIC, FC HBA, InfiniBand, SR-IOV, VLANs, and system-level adapter validation.
+            </p>
+          </div>
+
+          <div class="card reveal">
+            <div class="icon">🐍</div>
+            <h3>Python Automation</h3>
+            <p>
+              Reusable automation frameworks for API testing, CLI validation, reporting, and repeatable infrastructure checks.
+            </p>
+          </div>
+
+          <div class="card reveal">
+            <div class="icon">⚙️</div>
+            <h3>CI/CD Integration</h3>
+            <p>
+              Automation execution through GitHub and Jenkins pipelines for continuous testing and faster release validation.
+            </p>
+          </div>
+
+          <div class="card reveal">
+            <div class="icon">🧠</div>
+            <h3>AI-Assisted Testing</h3>
+            <p>
+              AI-driven log analysis, failure classification, anomaly detection, and intelligent test workflow improvements.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="expertise">
+      <div class="container">
+
+        <div class="section-title reveal">
+          <h2>Built for Infrastructure Complexity</h2>
+          <p>
+            We focus on the layers where real production issues often occur: compute, storage, networking, virtualization, and automation.
+          </p>
+        </div>
+
+        <div class="proof">
+          <div class="proof-item reveal">
+            <strong>Cloud</strong>
+            <span>IaaS validation</span>
+          </div>
+
+          <div class="proof-item reveal">
+            <strong>SAN</strong>
+            <span>Storage workflows</span>
+          </div>
+
+          <div class="proof-item reveal">
+            <strong>NVMe</strong>
+            <span>High-speed I/O</span>
+          </div>
+
+          <div class="proof-item reveal">
+            <strong>Python</strong>
+            <span>Automation-first</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="container">
+
+        <div class="section-title reveal">
+          <h2>Engagement Process</h2>
+          <p>
+            Simple, transparent, and execution-focused.
+          </p>
+        </div>
+
+        <div class="process">
+
+          <div class="step reveal">
+            <div class="step-num">01</div>
+            <h3>Understand</h3>
+            <p>Review your infrastructure, current validation gaps, and automation goals.</p>
+          </div>
+
+          <div class="step reveal">
+            <div class="step-num">02</div>
+            <h3>Design</h3>
+            <p>Define test strategy, scope, architecture, and automation approach.</p>
+          </div>
+
+          <div class="step reveal">
+            <div class="step-num">03</div>
+            <h3>Automate</h3>
+            <p>Build Python/API/CLI automation with reporting and repeatable execution.</p>
+          </div>
+
+          <div class="step reveal">
+            <div class="step-num">04</div>
+            <h3>Deliver</h3>
+            <p>Provide demo, documentation, handover, and improvement roadmap.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+
+        <div class="contact-panel reveal">
+          <div>
+            <h2>Need help automating infrastructure testing?</h2>
+            <p>
+              Reach out for cloud validation, storage testing, network/I/O testing, or Python automation support.
+            </p>
+          </div>
+
+          <div>
+            <a class="btn primary" href="mailto:maatrixtech@outlook.com">
+              maatrixtech@outlook.com
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      © 2026 MaAtrix Technologies. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    reveals.forEach((element) => observer.observe(element));
+  </script>
+
+</body>
+</html>
